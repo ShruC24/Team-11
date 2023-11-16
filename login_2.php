@@ -114,5 +114,3 @@
 </script>
 </body>
 </html>
-
-add proper user name 
