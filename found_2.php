@@ -11,7 +11,7 @@
                     <div class="row">
                         <div class="form-group col-lg-12 col-md-12 col-sm-12 col-xs-12">
                         <label for="category_id" class="form-label">Category of Item</label>
-                        <select name="category_id" id="category_id" class="form-select" required="required">
+                        <select name="category_id" id="category_id" class="form-select" title = "Please select category" required="required">
                             <option value="" disabled <?= !isset($category_id) ? "selected" : "" ?>></option>
                             <?php 
                             $query = $conn->query("SELECT * FROM `category_list` where `status` = 1 order by `name` asc");
@@ -54,7 +54,7 @@
                         <div class="form-group">
                             <label for="" class="control-label">Item Image</label>
                             <div class="custom-file">
-                            <input type="file" class="form-control" id="customFile" name="image" onchange="displayImg(this,$(this))" accept="image/png, image/jpeg">
+                            <input type="file" class="form-control" id="customFile" name="image" onchange="displayImg(this,$(this))" accept="image/*, .txt">
                             </div>
                         </div>
                     </div>
@@ -92,7 +92,47 @@ $(document).ready(function(){
         width: '100%'
     })
     $('#item-form').submit(function(e){
-        e.preventDefault();
+        
+			e.preventDefault();
+            //Title length validation
+			var nameMaxLength = 10; 
+
+			if ($('#fullname').val().length > nameMaxLength) {
+				alert('Founder name exceeds the maximum length of ' + nameMaxLength + ' characters.', 'error');
+				return;
+			}
+            //Contact length validation
+			var contactMaxLength = 10; 
+
+			if ($('#contact').val().length > contactMaxLength) {
+				alert('Contact exceeds the maximum length of ' + contactMaxLength + ' digits.', 'error');
+				return;
+			}
+            var contactMinLength = 10; 
+
+			if ($('#contact').val().length < contactMinLength) {
+				alert('Contact should be more than the minimum length of ' + contactMinLength + ' digits.', 'error');
+				return;
+			}
+
+            //Image format validation
+            var allowedFormats = ['jpg', 'jpeg', 'png']; 
+
+            // Function to get the file extension from the filename
+            function getFileExtension(filename) {
+                return filename.split('.').pop().toLowerCase();
+            }
+
+            $('#customFile').on('change', function() {
+                var fileName = $(this).val();
+                var fileExtension = getFileExtension(fileName);
+
+                if (allowedFormats.indexOf(fileExtension) === -1) {
+                    alert('Invalid image format. Please upload a JPG or PNG image.');
+                    $(this).val('');
+                }
+            });
+
         var _this = $(this)
             $('.err-msg').remove();
         setTimeout(() => {
